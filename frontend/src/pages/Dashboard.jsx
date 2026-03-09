@@ -337,7 +337,7 @@ const Dashboard = () => {
               {dynamicStatsCards.map((card, index) => (
                 <div
                   key={index}
-                  className="bg-card rounded-2xl p-6 shadow-sm border border-border hover:shadow-lg hover:-translate-y-1 hover:border-teal-300 dark:hover:border-teal-600 transition-all duration-200 cursor-pointer"
+                  className="bg-card rounded-2xl p-6 shadow-sm border border-border"
                 >
                   <div className="flex items-center justify-between mb-4">
                     <div className={`p-3 rounded-xl ${card.iconBg}`}>
@@ -364,7 +364,7 @@ const Dashboard = () => {
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                   {coursesData.allCourses.slice(0, 3).map((course, index) => (
                     <Link to={`/learning/${course.id}`} key={index}>
-                      <div className="bg-card rounded-xl border border-border overflow-hidden shadow-sm h-full hover:shadow-lg hover:-translate-y-1 hover:border-teal-300 dark:hover:border-teal-600 transition-all duration-200">
+                      <div className="bg-card rounded-xl border border-border overflow-hidden shadow-sm h-full">
                         <div className="relative">
                           <img
                             src={course.image}
@@ -409,7 +409,7 @@ const Dashboard = () => {
               </div>
 
               {/* Course Topics Chart */}
-              <div className="bg-card rounded-2xl p-6 shadow-sm border border-border hover:shadow-lg hover:-translate-y-1 hover:border-teal-300 dark:hover:border-teal-600 transition-all duration-200">
+              <div className="bg-card rounded-2xl p-6 shadow-sm border border-border">
                 <h2 className="text-xl font-bold text-main mb-6">
                   Course Topics
                 </h2>

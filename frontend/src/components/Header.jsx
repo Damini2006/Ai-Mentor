@@ -1,40 +1,16 @@
 import React, { useState, useRef, useEffect } from "react";
-import { Search, Bell, Menu, X, User, Settings, LogOut } from "lucide-react";
+import { Search, Bell, Menu, X, User, Settings, LogOut, ShieldCheck } from "lucide-react";
 import { useAuth } from "../context/AuthContext";
-import { useNavigate, useLocation } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import ThemeToggle from "../components/common/ThemeToggle";
 import { useSidebar } from "../context/SidebarContext";
 
 const Header = () => {
   const { sidebarOpen, setSidebarOpen } = useSidebar();
   const [dropdownOpen, setDropdownOpen] = useState(false);
-  const [searchQuery, setSearchQuery] = useState("");
   const { user, logout } = useAuth();
   const navigate = useNavigate();
-  const location = useLocation();
   const dropdownRef = useRef(null);
-
-  // Sync search input with URL param when navigating back to courses
-  useEffect(() => {
-    if (location.pathname === "/courses") {
-      const params = new URLSearchParams(location.search);
-      setSearchQuery(params.get("search") || "");
-    } else {
-      setSearchQuery("");
-    }
-  }, [location]);
-
-  const handleSearch = (e) => {
-    e.preventDefault();
-    const q = searchQuery.trim();
-    if (q) {
-      navigate(`/courses?search=${encodeURIComponent(q)}`);
-    }
-  };
-
-  const handleSearchKeyDown = (e) => {
-    if (e.key === "Enter") handleSearch(e);
-  };
 
   // ReferenceError se bachne ke liye displayName ko sabse upar define karein
   const displayName = user?.name || user?.email?.split('@')[0] || "User";
@@ -89,20 +65,14 @@ const Header = () => {
 
         {/* Search Bar (Mobile par hidden) */}
         <div className="flex-1 max-w-md mx-8 hidden md:block">
-          <form onSubmit={handleSearch} className="relative group">
-            <Search
-              className="absolute left-4 top-1/2 -translate-y-1/2 text-muted group-focus-within:text-teal-500 transition-colors w-4 h-4 cursor-pointer"
-              onClick={handleSearch}
-            />
+          <div className="relative group">
+            <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-muted group-focus-within:text-teal-500 transition-colors w-4 h-4" />
             <input
               type="text"
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-              onKeyDown={handleSearchKeyDown}
-              placeholder="Try search programming courses ...."
+              placeholder="Search courses or skills..."
               className="w-full pl-12 pr-4 py-2.5 bg-canvas border border-border rounded-2xl text-sm focus:ring-2 focus:ring-teal-500/20 focus:border-teal-500 transition-all outline-none"
             />
-          </form>
+          </div>
         </div>
 
         {/* Action Buttons & Profile */}
@@ -121,42 +91,48 @@ const Header = () => {
               className="flex items-center space-x-3 p-1 pr-3 rounded-2xl hover:bg-canvas-alt transition-all border border-transparent hover:border-border group"
             >
               <div className="relative">
-                <div className="w-9 h-9 rounded-full bg-orange-500 flex items-center justify-center shadow-md">
-                  <span className="text-white font-bold text-sm leading-none">
-                    {displayName.split(" ").map((w) => w[0]).join("").toUpperCase().slice(0, 2)}
-                  </span>
-                </div>
+                <img
+                  src={`https://api.dicebear.com/8.x/initials/svg?seed=${encodeURIComponent(displayName)}`}
+                  className="w-9 h-9 rounded-xl shadow-md border border-border/50 group-hover:border-teal-500 transition-all"
+                  alt="Avatar"
+                />
+                <div className="absolute -bottom-0.5 -right-0.5 w-2.5 h-2.5 bg-green-500 border-2 border-card rounded-full" />
               </div>
-              <span className="text-sm font-semibold text-slate-700 dark:text-slate-200 hidden lg:block">{displayName}</span>
+              <span className="text-sm font-bold text-main hidden lg:block">{displayName}</span>
             </button>
 
-            {/* Dropdown */}
+            {/* Impressive Floating Menu */}
             {dropdownOpen && (
-              <div className="absolute right-0 mt-3 w-64 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-2xl shadow-xl z-[110] overflow-hidden animate-in fade-in zoom-in-95 slide-in-from-top-2 duration-200">
-                {/* Profile header */}
-                <div className="flex items-center gap-3 p-4 border-b border-slate-100 dark:border-slate-700">
-                  <div className="w-11 h-11 rounded-full bg-orange-500 flex items-center justify-center shrink-0">
-                    <span className="text-white font-bold text-sm leading-none">
-                      {displayName.split(" ").map((w) => w[0]).join("").toUpperCase().slice(0, 2)}
-                    </span>
+              <div className="absolute right-0 mt-4 w-72 bg-card/95 backdrop-blur-2xl border border-border/50 rounded-[2rem] shadow-[0_20px_50px_rgba(0,0,0,0.2)] z-[110] overflow-hidden animate-in fade-in zoom-in slide-in-from-top-4 duration-300">
+                <div className="p-6 bg-gradient-to-br from-teal-500/10 via-blue-500/5 to-transparent border-b border-border/50">
+                  <div className="flex items-center space-x-4 mb-4">
+                    <img
+                      src={`https://api.dicebear.com/8.x/initials/svg?seed=${encodeURIComponent(displayName)}`}
+                      className="w-14 h-14 rounded-2xl shadow-xl border-2 border-white dark:border-slate-800"
+                      alt="User"
+                    />
+                    <div className="min-w-0">
+                      <h4 className="text-sm font-black text-main truncate leading-tight uppercase">{user?.name || displayName}</h4>
+                      <p className="text-[10px] text-muted font-bold truncate opacity-60 mt-0.5 uppercase tracking-widest">{user?.role || 'STUDENT'}</p>
+                    </div>
                   </div>
-                  <div className="min-w-0">
-                    <p className="text-sm font-bold text-slate-800 dark:text-white truncate">{user?.name || displayName}</p>
-                    <p className="text-xs text-slate-400 dark:text-slate-500 truncate">{user?.email || ""}</p>
+                  <div className="flex items-center space-x-2 text-[10px] font-black bg-teal-500/10 text-teal-600 dark:text-teal-400 py-1.5 px-3 rounded-full w-fit uppercase">
+                     <ShieldCheck className="w-3 h-3" /> <span>Verified Profile</span>
                   </div>
                 </div>
-
-                {/* Menu items */}
-                <div className="p-2">
-                  <button onClick={() => { navigate("/settings"); setDropdownOpen(false); }} className="flex items-center w-full gap-3 px-3 py-2.5 text-sm text-slate-700 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-700 rounded-xl transition-all">
-                    <User className="w-4 h-4 text-slate-400" /> My Account
+                
+                <div className="p-3 text-left">
+                  <button onClick={() => { navigate("/settings"); setDropdownOpen(false); }} className="flex items-center w-full px-4 py-3.5 text-xs font-bold text-main hover:bg-teal-500 hover:text-white rounded-[1.2rem] transition-all group">
+                    <User className="mr-3 w-4 h-4 group-hover:scale-110 transition-transform" /> My Account
                   </button>
-                  <button onClick={() => { navigate("/settings"); setDropdownOpen(false); }} className="flex items-center w-full gap-3 px-3 py-2.5 text-sm text-slate-700 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-700 rounded-xl transition-all">
-                    <Settings className="w-4 h-4 text-slate-400" /> Settings
+                  <button onClick={() => { navigate("/settings"); setDropdownOpen(false); }} className="flex items-center w-full px-4 py-3.5 text-xs font-bold text-main hover:bg-teal-500 hover:text-white rounded-[1.2rem] transition-all group mt-1">
+                    <Settings className="mr-3 w-4 h-4 group-hover:rotate-45 transition-transform" /> Settings
                   </button>
-                  <div className="my-1 border-t border-slate-100 dark:border-slate-700" />
-                  <button onClick={handleLogout} className="flex items-center w-full gap-3 px-3 py-2.5 text-sm text-red-500 hover:bg-red-50 dark:hover:bg-red-900/20 rounded-xl transition-all">
-                    <LogOut className="w-4 h-4" /> Log Out
+                  
+                  <div className="my-2 border-t border-border/50 mx-2" />
+                  
+                  <button onClick={handleLogout} className="flex items-center w-full px-4 py-3.5 text-xs font-black text-red-500 hover:bg-red-500 hover:text-white rounded-[1.2rem] transition-all group">
+                    <LogOut className="mr-3 w-4 h-4 group-hover:translate-x-1 transition-transform" /> Logout Session
                   </button>
                 </div>
               </div>

@@ -4,7 +4,7 @@ import Sidebar from "../components/Sidebar";
 import { Star, Bookmark, X } from "lucide-react";
 import { useAuth } from "../context/AuthContext";
 import { useSidebar } from "../context/SidebarContext";
-import { useNavigate, useLocation } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import API_BASE_URL from "../lib/api";
 
 const CoursesPage = () => {
@@ -12,7 +12,6 @@ const CoursesPage = () => {
   const [activeTab, setActiveTab] = useState("my-courses");
   const { user } = useAuth();
   const navigate = useNavigate();
-  const location = useLocation();
 
   /* ================= STATE ================= */
   const [exploreCourses, setExploreCourses] = useState([]);
@@ -21,15 +20,6 @@ const CoursesPage = () => {
 
   const [showEnrollPopup, setShowEnrollPopup] = useState(false);
   const [selectedCourse, setSelectedCourse] = useState(null);
-
-  /* ================= SEARCH FROM URL ================= */
-  const searchQuery = new URLSearchParams(location.search).get("search") || "";
-
-  useEffect(() => {
-    if (searchQuery) {
-      setActiveTab("explore");
-    }
-  }, [searchQuery]);
 
   /* ================= FETCH COURSES ================= */
   useEffect(() => {
@@ -160,24 +150,13 @@ const CoursesPage = () => {
             {/* ================= MY COURSES ================= */}
             {activeTab === "my-courses" && (
               <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-                {myCourses
-                  .filter((course) =>
-                    !searchQuery ||
-                    course.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
-                    course.category?.toLowerCase().includes(searchQuery.toLowerCase())
-                  )
-                  .length === 0 && (
+                {myCourses.length === 0 && (
                   <p className="text-slate-500">
-                    {searchQuery ? `No courses found for "${searchQuery}".` : "You have not enrolled in any courses yet."}
+                    You have not enrolled in any courses yet.
                   </p>
                 )}
 
-                {myCourses
-                  .filter((course) =>
-                    !searchQuery ||
-                    course.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
-                    course.category?.toLowerCase().includes(searchQuery.toLowerCase())
-                  ).map((course) => {
+                {myCourses.map((course) => {
                   const purchasedEntry = user?.purchasedCourses?.find(
                     (c) => Number(c.courseId) === Number(course.id)
                   );
@@ -219,21 +198,10 @@ const CoursesPage = () => {
 
             {/* ================= EXPLORE COURSES ================= */}
             {activeTab === "explore" && (
-              <div>
-                {searchQuery && (
-                  <p className="text-sm text-muted mb-4">
-                    Showing results for <span className="font-semibold text-main">"{searchQuery}"</span>
-                  </p>
-                )}
-                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
                 {exploreCourses
                   .filter(
                     (course) => !myCourses.some((c) => c.id === course.id)
-                  )
-                  .filter((course) =>
-                    !searchQuery ||
-                    course.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
-                    course.category?.toLowerCase().includes(searchQuery.toLowerCase())
                   )
                   .map((course) => (
                     <div
@@ -280,7 +248,6 @@ const CoursesPage = () => {
                       </div>
                     </div>
                   ))}
-                </div>
               </div>
             )}
           </div>

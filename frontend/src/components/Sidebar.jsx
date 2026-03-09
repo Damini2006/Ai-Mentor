@@ -1,7 +1,7 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
-import { ChevronRight, LogOut } from "lucide-react";
+import { ChevronRight, LogOut, Settings, User, ShieldCheck, LayoutGrid } from "lucide-react";
 import API_BASE_URL from "../lib/api";
 import { useSidebar } from "../context/SidebarContext";
 
@@ -10,26 +10,26 @@ const Sidebar = ({ activePage = "dashboard" }) => {
   const { user, logout } = useAuth();
   const navigate = useNavigate();
   const [navigationItems, setNavigationItems] = useState([]);
-  const [showLogoutModal, setShowLogoutModal] = useState(false);
+  const [profilePopupOpen, setProfilePopupOpen] = useState(false);
+  const profileRef = useRef(null);
 
   const handleLogout = () => {
     logout();
-    setShowLogoutModal(false);
     setProfilePopupOpen(false);
     navigate("/login", { state: { logoutSuccess: true } });
   };
 
   const displayName = user?.name || user?.email?.split('@')[0] || "User";
-  const userEmail = user?.email || "";
 
-  const getInitials = (name) => {
-    return name
-      .split(" ")
-      .map((w) => w[0])
-      .join("")
-      .toUpperCase()
-      .slice(0, 2);
-  };
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (profileRef.current && !profileRef.current.contains(event.target)) {
+        setProfilePopupOpen(false);
+      }
+    };
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, []);
 
   useEffect(() => {
     let isMounted = true;
@@ -53,51 +53,22 @@ const Sidebar = ({ activePage = "dashboard" }) => {
     <>
       {sidebarOpen && <div className="fixed inset-0 bg-black/60 backdrop-blur-md z-[60] lg:hidden" onClick={() => setSidebarOpen(false)} />}
 
-      {/* Logout Confirmation Modal */}
-      {showLogoutModal && (
-        <div className="fixed inset-0 z-[200] flex items-center justify-center bg-black/50 backdrop-blur-sm">
-          <div className="bg-white dark:bg-slate-800 rounded-3xl shadow-2xl w-[340px] mx-4 p-8 flex flex-col items-center animate-in fade-in zoom-in-95 duration-200">
-            <div className="w-16 h-16 rounded-full bg-red-100 dark:bg-red-900/30 flex items-center justify-center mb-5">
-              <LogOut className="w-7 h-7 text-red-500" />
-            </div>
-            <h2 className="text-xl font-bold text-slate-800 dark:text-white mb-2">Log Out?</h2>
-            <p className="text-sm text-slate-500 dark:text-slate-400 text-center mb-7">
-              Are you sure you want to log out of your account?
-            </p>
-            <div className="flex gap-3 w-full">
-              <button
-                onClick={() => setShowLogoutModal(false)}
-                className="flex-1 py-3 rounded-xl border border-slate-200 dark:border-slate-600 text-slate-700 dark:text-slate-300 font-semibold text-sm hover:bg-slate-50 dark:hover:bg-slate-700 transition-all"
-              >
-                Cancel
-              </button>
-              <button
-                onClick={handleLogout}
-                className="flex-1 py-3 rounded-xl bg-red-500 hover:bg-red-600 text-white font-semibold text-sm transition-all shadow-lg shadow-red-500/30"
-              >
-                Yes, Log Out
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
-
-      <div className={`fixed lg:fixed top-18.5 left-0 z-[70] bg-white dark:bg-slate-900 border-r border-slate-200 dark:border-slate-700 transform transition-all duration-500 ease-out lg:translate-x-0 ${sidebarOpen ? "translate-x-0" : "-translate-x-full lg:translate-x-0"} ${sidebarCollapsed ? "lg:w-20" : "lg:w-72"} w-72 h-[calc(100vh-4rem)] overflow-visible`}>
+      <div className={`fixed lg:fixed top-18.5 left-0 z-[70] bg-card/70 backdrop-blur-2xl border-r border-border/50 transform transition-all duration-500 ease-out lg:translate-x-0 ${sidebarOpen ? "translate-x-0" : "-translate-x-full lg:translate-x-0"} ${sidebarCollapsed ? "lg:w-24" : "lg:w-80"} w-80 h-[calc(100vh-4rem)] overflow-visible`}>
         
-        <button onClick={() => setSidebarCollapsed(!sidebarCollapsed)} className="hidden lg:flex absolute -right-4 top-8 w-8 h-8 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-600 rounded-full items-center justify-center hover:bg-teal-500 hover:text-white transition-all shadow-md z-[80]">
+        <button onClick={() => setSidebarCollapsed(!sidebarCollapsed)} className="hidden lg:flex absolute -right-5 top-8 w-10 h-10 bg-card border border-border rounded-xl items-center justify-center hover:bg-teal-500 hover:text-white transition-all shadow-xl z-[80]">
           <ChevronRight className={`w-5 h-5 transition-transform duration-500 ${sidebarCollapsed ? "" : "rotate-180"}`} />
         </button>
 
-        <nav className={`mt-6 px-3 h-[calc(100vh-16rem)] scrollbar-hide ${sidebarCollapsed ? "overflow-visible" : "overflow-y-auto"}`}>
-          <div className="space-y-1">
+        <nav className={`mt-8 px-4 h-[calc(100vh-16rem)] scrollbar-hide ${sidebarCollapsed ? "overflow-visible" : "overflow-y-auto"}`}>
+          <div className="space-y-3">
             {navigationItems.map((item) => {
               const isActive = activePage === item.id;
               return (
-                <div key={item.id} onClick={() => navigate(item.path)} className={`group relative flex items-center px-4 py-3 rounded-xl cursor-pointer transition-all duration-200 ${sidebarCollapsed ? "justify-center" : ""} ${isActive ? "bg-teal-50 dark:bg-teal-900/30" : "hover:bg-slate-50 dark:hover:bg-slate-800"}`}>
-                  <img src={item.icon} alt={item.label} className={`w-5 h-5 shrink-0 ${isActive ? "brightness-0 saturate-100" : "opacity-60"}`} style={isActive ? {filter: "invert(47%) sepia(98%) saturate(400%) hue-rotate(130deg) brightness(95%)"} : {}} />
-                  {!sidebarCollapsed && <span className={`ml-3 text-sm font-semibold ${isActive ? "text-teal-600 dark:text-teal-400" : "text-slate-600 dark:text-slate-300"}`}>{item.label}</span>}
+                <div key={item.id} onClick={() => navigate(item.path)} className={`group relative flex items-center px-4 py-4 rounded-[1.5rem] cursor-pointer transition-all duration-300 ${sidebarCollapsed ? "justify-center" : ""} ${isActive ? "bg-teal-500 text-white shadow-xl shadow-teal-500/30" : "text-muted hover:bg-canvas-alt"}`}>
+                  <img src={item.icon} alt={item.label} className={`w-5 h-5 shrink-0 transition-transform group-hover:scale-110 ${isActive ? "brightness-0 invert" : ""}`} />
+                  {!sidebarCollapsed && <span className={`ml-4 text-sm font-black uppercase tracking-tight ${isActive ? "text-white" : ""}`}>{item.label}</span>}
                   {sidebarCollapsed && (
-                    <div className="absolute left-full ml-4 px-3 py-1.5 bg-slate-800 text-white text-xs font-semibold rounded-lg opacity-0 group-hover:opacity-100 pointer-events-none transition-all shadow-xl z-50 whitespace-nowrap">{item.label}</div>
+                    <div className="absolute left-full ml-6 px-4 py-2 bg-slate-900 text-white text-[10px] font-black rounded-xl opacity-0 group-hover:opacity-100 pointer-events-none transition-all shadow-2xl z-50 uppercase tracking-widest">{item.label}</div>
                   )}
                 </div>
               );
@@ -105,39 +76,35 @@ const Sidebar = ({ activePage = "dashboard" }) => {
           </div>
         </nav>
 
-        {/* --- BOTTOM PROFILE (always visible) --- */}
-        <div className="absolute bottom-0 left-0 right-0 border-t border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900">
-          {!sidebarCollapsed ? (
-            <div className="p-4">
-              {/* Card with border */}
-              <div className="border border-slate-200 dark:border-slate-700 rounded-2xl p-3 bg-white dark:bg-slate-800">
-                {/* Avatar row */}
-                <div className="flex items-center gap-3 mb-3">
-                  <div className="w-10 h-10 rounded-full bg-orange-500 flex items-center justify-center shrink-0">
-                    <span className="text-white font-bold text-sm leading-none">{getInitials(displayName)}</span>
-                  </div>
-                  <div className="flex flex-col min-w-0 flex-1">
-                    <span className="text-sm font-semibold text-slate-800 dark:text-white truncate">{displayName}</span>
-                    <span className="text-xs text-slate-400 dark:text-slate-500 truncate">{userEmail}</span>
-                  </div>
-                </div>
-                {/* Log Out button */}
-                <button
-                  onClick={() => setShowLogoutModal(true)}
-                  className="flex items-center justify-center gap-2 w-full py-2.5 rounded-xl border border-slate-200 dark:border-slate-700 text-red-500 hover:bg-red-50 dark:hover:bg-red-900/20 transition-all text-sm font-semibold"
-                >
-                  <LogOut className="w-4 h-4" />
-                  Log Out
-                </button>
+        {/* --- BOTTOM PROFILE WITH POPUP --- */}
+        <div className="absolute bottom-8 left-0 right-0 px-4" ref={profileRef}>
+          {profilePopupOpen && (
+            <div className={`absolute bottom-full mb-6 left-4 right-4 bg-card/95 backdrop-blur-2xl border border-border/50 rounded-[2.5rem] shadow-[0_-20px_80px_rgba(0,0,0,0.3)] overflow-hidden animate-in fade-in slide-in-from-bottom-4 duration-300 z-[90] ${sidebarCollapsed ? "w-52 -left-2" : ""}`}>
+              <div className="p-6 border-b border-border/50 bg-gradient-to-tr from-teal-500/10 to-transparent text-center">
+                 <img src={`https://api.dicebear.com/8.x/initials/svg?seed=${encodeURIComponent(displayName)}`} className="w-16 h-16 rounded-[1.5rem] mx-auto mb-3 shadow-2xl border-2 border-card" alt="User" />
+                 <h4 className="text-xs font-black text-main uppercase tracking-tighter">{displayName}</h4>
               </div>
-            </div>
-          ) : (
-            <div className="p-3 flex flex-col items-center gap-2">
-              <div className="w-10 h-10 rounded-full bg-orange-500 flex items-center justify-center cursor-pointer" title={`${displayName} — Log Out`} onClick={() => setShowLogoutModal(true)}>
-                <span className="text-white font-bold text-sm leading-none">{getInitials(displayName)}</span>
+              <div className="p-2">
+                <button onClick={() => {navigate("/settings"); setProfilePopupOpen(false);}} className="flex items-center w-full px-4 py-4 text-[10px] font-black uppercase text-main hover:bg-teal-500 hover:text-white rounded-[1.5rem] transition-all"><Settings className="w-4 h-4 mr-3" /> Dashboard Settings</button>
+                <button onClick={handleLogout} className="flex items-center w-full px-4 py-4 text-[10px] font-black uppercase text-red-500 hover:bg-red-500 hover:text-white rounded-[1.5rem] transition-all mt-1"><LogOut className="w-4 h-4 mr-3" /> End Session</button>
               </div>
             </div>
           )}
+
+          <div 
+            onClick={() => setProfilePopupOpen(!profilePopupOpen)}
+            className={`cursor-pointer group relative p-[2px] rounded-[2rem] bg-gradient-to-br from-teal-500/30 via-blue-500/20 to-transparent transition-all duration-500 shadow-lg hover:shadow-teal-500/10 ${profilePopupOpen ? 'ring-2 ring-teal-500' : ''}`}
+          >
+            <div className={`bg-card dark:bg-slate-900 rounded-[1.9rem] transition-all duration-300 ${sidebarCollapsed ? 'p-1' : 'p-4 flex items-center'}`}>
+              <img src={`https://api.dicebear.com/8.x/initials/svg?seed=${encodeURIComponent(displayName)}`} className={`${sidebarCollapsed ? 'w-12 h-12' : 'w-10 h-10'} rounded-[1.2rem] shadow-md border-2 border-white dark:border-slate-800 transition-all`} alt="Avatar" />
+              {!sidebarCollapsed && (
+                <div className="ml-3 flex-1 min-w-0">
+                  <div className="text-[11px] font-black text-main truncate uppercase tracking-tight">{displayName}</div>
+                  <div className="text-[9px] text-muted font-bold opacity-50 uppercase tracking-widest mt-0.5">Account</div>
+                </div>
+              )}
+            </div>
+          </div>
         </div>
       </div>
     </>
