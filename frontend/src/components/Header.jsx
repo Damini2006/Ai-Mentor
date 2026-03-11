@@ -4,8 +4,10 @@ import { useAuth } from "../context/AuthContext";
 import { useNavigate } from "react-router-dom";
 import ThemeToggle from "../components/common/ThemeToggle";
 import { useSidebar } from "../context/SidebarContext";
+import { useTranslation } from "react-i18next";
 
 const Header = () => {
+  const { t } = useTranslation();
   const { sidebarOpen, setSidebarOpen } = useSidebar();
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const { user, logout } = useAuth();
@@ -69,7 +71,7 @@ const Header = () => {
             <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-muted group-focus-within:text-teal-500 transition-colors w-4 h-4" />
             <input
               type="text"
-              placeholder="Search courses or skills..."
+              placeholder={t("header.search_placeholder")}
               className="w-full pl-12 pr-4 py-2.5 bg-canvas border border-border rounded-2xl text-sm focus:ring-2 focus:ring-teal-500/20 focus:border-teal-500 transition-all outline-none"
             />
           </div>
@@ -123,16 +125,16 @@ const Header = () => {
                 
                 <div className="p-3 text-left">
                   <button onClick={() => { navigate("/settings"); setDropdownOpen(false); }} className="flex items-center w-full px-4 py-3.5 text-xs font-bold text-main hover:bg-teal-500 hover:text-white rounded-[1.2rem] transition-all group">
-                    <User className="mr-3 w-4 h-4 group-hover:scale-110 transition-transform" /> My Account
+                    <User className="mr-3 w-4 h-4 group-hover:scale-110 transition-transform" /> {t("nav.profile")}
                   </button>
                   <button onClick={() => { navigate("/settings"); setDropdownOpen(false); }} className="flex items-center w-full px-4 py-3.5 text-xs font-bold text-main hover:bg-teal-500 hover:text-white rounded-[1.2rem] transition-all group mt-1">
-                    <Settings className="mr-3 w-4 h-4 group-hover:rotate-45 transition-transform" /> Settings
+                    <Settings className="mr-3 w-4 h-4 group-hover:rotate-45 transition-transform" /> {t("nav.settings")}
                   </button>
                   
                   <div className="my-2 border-t border-border/50 mx-2" />
                   
                   <button onClick={handleLogout} className="flex items-center w-full px-4 py-3.5 text-xs font-black text-red-500 hover:bg-red-500 hover:text-white rounded-[1.2rem] transition-all group">
-                    <LogOut className="mr-3 w-4 h-4 group-hover:translate-x-1 transition-transform" /> Logout Session
+                    <LogOut className="mr-3 w-4 h-4 group-hover:translate-x-1 transition-transform" /> {t("auth.logout")}
                   </button>
                 </div>
               </div>

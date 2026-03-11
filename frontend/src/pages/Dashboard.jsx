@@ -4,6 +4,7 @@ import Header from "../components/Header";
 import Sidebar from "../components/Sidebar";
 import { useAuth } from "../context/AuthContext";
 import { useSidebar } from "../context/SidebarContext";
+import { useTranslation } from "react-i18next";
 import {
   Search,
   Bell,
@@ -25,8 +26,8 @@ import {
 } from "lucide-react";
 
 const Dashboard = () => {
-  const { sidebarOpen, setSidebarOpen, sidebarCollapsed, setSidebarCollapsed } =
-    useSidebar();
+  const { t } = useTranslation();
+  const { sidebarOpen, setSidebarOpen, sidebarCollapsed, setSidebarCollapsed } = useSidebar();
   const [coursesData, setCoursesData] = useState({
     statsCards: [],
     allCourses: [],
@@ -320,7 +321,7 @@ const Dashboard = () => {
         >
           <main className="flex-1 mt-10 overflow-x-hidden overflow-y-auto bg-canvas-alt p-6">
             <div className="flex items-center justify-center h-64">
-              <div className="text-muted">Loading dashboard...</div>
+              <div className="text-muted">{t("dashboard.loading")}</div>
             </div>
           </main>
         </div>
@@ -347,7 +348,9 @@ const Dashboard = () => {
           <div className="max-w-7xl pt-16 mx-auto space-y-8">
             {/* Stats Cards */}
             <div className="grid grid-cols-1  sm:grid-cols-2 lg:grid-cols-4 gap-6">
-              {dynamicStatsCards.map((card, index) => (
+              {dynamicStatsCards.map((card, index) => {
+                const statLabelKeys = ["ongoing_courses", "completed", "certificates", "hours_spent"];
+                return (
                 <div
                   key={index}
                   className="bg-card rounded-2xl p-6 shadow-sm border border-border"
@@ -363,16 +366,17 @@ const Dashboard = () => {
                   <div className="text-2xl font-bold text-main mb-1">
                     {card.value}
                   </div>
-                  <div className="text-sm text-muted">{card.label}</div>
+                  <div className="text-sm text-muted">{t(`dashboard.${statLabelKeys[index]}`)}</div>
                 </div>
-              ))}
+              );
+              })}
             </div>
 
             <div className="grid grid-cols-1 xl:grid-cols-3 gap-8">
               {/* Popular Courses */}
               {/* <div className="xl:col-span-2">
                 <h2 className="text-xl font-bold text-main mb-6">
-                  Popular Courses
+                  {t("dashboard.popular_courses")}
                 </h2>
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                   {coursesData.allCourses.slice(0, 3).map((course, index) => (
@@ -569,7 +573,7 @@ const Dashboard = () => {
               {/* Course Topics Chart */}
               <div className="bg-card rounded-2xl p-6 shadow-sm border border-border">
                 <h2 className="text-xl font-bold text-main mb-6">
-                  Course Topics
+                  {t("dashboard.course_topics")}
                 </h2>
                 <div className="relative flex items-center justify-center mb-6">
                   <div className="w-48 h-48 relative">
@@ -611,22 +615,22 @@ const Dashboard = () => {
                     </svg>
                     <div className="absolute inset-0 flex flex-col items-center justify-center">
                       <div className="text-2xl font-bold">15</div>
-                      <div className="text-xs text-muted">Total course</div>
+                      <div className="text-xs text-muted">{t("dashboard.total_course")}</div>
                     </div>
                   </div>
                 </div>
                 <div className="space-y-3">
                   <div className="flex items-center">
                     <div className="w-3 h-3 rounded-full bg-orange-400 mr-3"></div>
-                    <span className="text-sm text-muted">Code (70%)</span>
+                    <span className="text-sm text-muted">{t("dashboard.code")} (70%)</span>
                   </div>
                   <div className="flex items-center">
                     <div className="w-3 h-3 rounded-full bg-orange-200 mr-3"></div>
-                    <span className="text-sm text-muted">Data (20%)</span>
+                    <span className="text-sm text-muted">{t("dashboard.data")} (20%)</span>
                   </div>
                   <div className="flex items-center">
                     <div className="w-3 h-3 rounded-full bg-orange-300 mr-3"></div>
-                    <span className="text-sm text-muted">Design (10%)</span>
+                    <span className="text-sm text-muted">{t("dashboard.design")} (10%)</span>
                   </div>
                 </div>
               </div>
@@ -636,7 +640,7 @@ const Dashboard = () => {
               {/* My Courses Table
               <div className="xl:col-span-2">
                 <h2 className="text-xl font-bold text-main mb-6">
-                  My Courses
+                  {t("dashboard.my_courses")}
                 </h2>
                 <div className="bg-card rounded-xl border border-border overflow-hidden">
                   <div className="overflow-x-auto">
@@ -644,16 +648,16 @@ const Dashboard = () => {
                       <thead className="bg-canvas-alt">
                         <tr>
                           <th className="px-4 py-4 text-left text-sm font-medium text-muted">
-                            Course
+                            {t("dashboard.course")}
                           </th>
                           <th className="px-4 py-4 text-left text-sm font-medium text-muted">
-                            Progress
+                            {t("dashboard.progress")}
                           </th>
                           <th className="px-4 py-4 text-left text-sm font-medium text-muted">
-                            Lessons
+                            {t("dashboard.lessons")}
                           </th>
                           <th className="px-4 py-4 text-left text-sm font-medium text-muted">
-                            Level
+                            {t("dashboard.level")}
                           </th>
                         </tr>
                       </thead>
@@ -698,7 +702,7 @@ const Dashboard = () => {
                               <span
                                 className={`inline-block px-2 py-1 rounded-full text-xs font-medium ${course.levelColor}`}
                               >
-                                {course.level}
+                                {t(`dashboard.${course.level.toLowerCase()}`)}
                               </span>
                             </td>
                           </tr>
@@ -712,7 +716,7 @@ const Dashboard = () => {
               {/* Continue Learning
               <div>
                 <h2 className="text-xl font-bold text-main mb-6">
-                  Continue Learning
+                  {t("common.continue_learning")}
                 </h2>
                 <div className="space-y-4">
                   {continueLearning.map((item, index) => (
@@ -749,13 +753,95 @@ const Dashboard = () => {
                           to={`/learning/${item.id}`}
                           className="ml-4 px-4 py-2 bg-teal-500 text-white text-sm font-medium rounded-lg hover:bg-teal-600"
                         >
-                          Continue
+                          {t("common.continue_learning")}
                         </Link>
                       </div>
                     </div>
                   ))}
                 </div>
-              </div> */}
+              </div>
+            </div>
+
+            <div className="grid grid-cols-1 xl:grid-cols-4 gap-8">
+              {/* Calendar */}
+              <div className="xl:col-span-3 bg-card rounded-xl p-6 border border-border">
+                <div className="flex items-center justify-between mb-6">
+                  <h2 className="text-xl font-bold text-main">
+                    {t("dashboard.class_calendar")}
+                  </h2>
+                  <div className="flex items-center space-x-4">
+                    <button className="p-2 bg-gray-100 text-black rounded-lg">
+                      <ChevronLeftIcon className="w-4 h-4" />
+                    </button>
+                    <span className="text-lg font-medium">December 2024</span>
+                    <button className="p-2 bg-gray-100 text-black rounded-lg">
+                      <ChevronRight className="w-4 h-4" />
+                    </button>
+                  </div>
+                </div>
+
+                <div className="grid grid-cols-7 gap-px mb-4">
+                  {["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"].map(
+                    (day) => (
+                      <div
+                        key={day}
+                        className="p-3 text-center text-sm font-medium text-muted"
+                      >
+                        {day}
+                      </div>
+                    ),
+                  )}
+                </div>
+
+                <div className="grid grid-cols-7 gap-px">
+                  {Array.from({ length: 31 }, (_, i) => (
+                    <div
+                      key={i + 1}
+                      className={`p-3 text-center text-sm ${[3, 5, 9, 12, 16, 19, 23].includes(i + 1)
+                        ? "bg-blue-50 dark:bg-blue-100 text-blue-900 rounded-lg"
+                        : "text-main hover:bg-canvas-alt rounded-lg"
+                        }`}
+                    >
+                      {i + 1}
+                    </div>
+                  ))}
+                </div>
+
+                <div className="flex items-center space-x-6 mt-6 text-sm">
+                  <div className="flex items-center">
+                    <div className="w-3 h-3 bg-blue-500 rounded-full mr-2"></div>
+                    <span className="text-muted">{t("analytics.upcoming")}</span>
+                  </div>
+                  <div className="flex items-center">
+                    <div className="w-3 h-3 bg-green-500 rounded-full mr-2"></div>
+                    <span className="text-muted">{t("analytics.completed")}</span>
+                  </div>
+                  <div className="flex items-center">
+                    <div className="w-3 h-3 bg-red-500 rounded-full mr-2"></div>
+                    <span className="text-muted">{t("analytics.missed")}</span>
+                  </div>
+                </div>
+              </div>
+
+              {/* Today's Schedule */}
+              <div className="bg-card rounded-xl p-6 border border-border">
+                <h3 className="text-lg font-semibold text-main mb-4">
+                  {t("dashboard.schedule")}
+                </h3>
+                <div className="space-y-3">
+                  {schedule.map((item, index) => (
+                    <div
+                      key={index}
+                      className={`p-3 rounded-lg border-l-4 ${item.color}`}
+                    >
+                      <h4 className="font-medium text-black mb-1">
+                        {item.title}
+                      </h4>
+                      <p className="text-sm text-muted">{item.time}</p>
+                    </div>
+                  ))}
+                </div>
+              </div>
             </div>
           </div>
         </main>

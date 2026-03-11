@@ -6,10 +6,11 @@ import { useAuth } from "../context/AuthContext";
 import { useSidebar } from "../context/SidebarContext";
 import { useNavigate, useLocation } from "react-router-dom";
 import API_BASE_URL from "../lib/api";
+import { useTranslation } from "react-i18next";
 
 const CoursesPage = () => {
-  const { sidebarOpen, setSidebarOpen, sidebarCollapsed, setSidebarCollapsed } =
-    useSidebar();
+  const { t } = useTranslation();
+  const { sidebarOpen, setSidebarOpen, sidebarCollapsed, setSidebarCollapsed } = useSidebar();
   const [activeTab, setActiveTab] = useState("my-courses");
   const { user } = useAuth();
   const navigate = useNavigate();
@@ -125,9 +126,11 @@ const CoursesPage = () => {
           <div className="max-w-7xl mx-auto space-y-10">
             {/* HEADER */}
             <div>
-              <h1 className="text-3xl font-bold text-main">Learning Hub</h1>
+              <h1 className="text-3xl font-bold text-main">
+                {t("courses.title")}
+              </h1>
               <p className="text-muted mt-1">
-                Discover and continue your learning journey
+                {t("courses.subtitle")}
               </p>
             </div>
 
@@ -141,7 +144,7 @@ const CoursesPage = () => {
                     : "text-muted"
                 }`}
               >
-                My Courses
+                {t("courses.my_courses")}
               </button>
               <button
                 onClick={() => setActiveTab("explore")}
@@ -151,7 +154,7 @@ const CoursesPage = () => {
                     : "text-muted"
                 }`}
               >
-                Explore Courses
+                {t("courses.explore")}
               </button>
             </div>
 
@@ -160,7 +163,7 @@ const CoursesPage = () => {
               <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
                 {myCourses.length === 0 && (
                   <p className="text-slate-500">
-                    You have not enrolled in any courses yet.
+                    {t("courses.not_enrolled")}
                   </p>
                 )}
 
@@ -195,7 +198,7 @@ const CoursesPage = () => {
                           onClick={() => navigate(`/learning/${course.id}`)}
                           className="w-full py-3 rounded-xl bg-[#2DD4BF] text-white font-semibold"
                         >
-                          {hasStarted ? "Continue Learning" : "Start Learning"}
+                          {hasStarted ? t("common.continue_learning") : t("common.start_learning")}
                         </button>
                       </div>
                     </div>
@@ -250,7 +253,7 @@ const CoursesPage = () => {
                             onClick={() => navigate(`/course-preview/${course.id}`)}
                             className="px-4 py-2 rounded-lg bg-[#2DD4BF] text-white text-xs font-semibold"
                           >
-                            Enroll
+                            {t("common.enroll")}
                           </button>
                         </div>
                       </div>
@@ -296,7 +299,7 @@ const CoursesPage = () => {
               onClick={handleEnroll}
               className="w-full mt-6 py-3 rounded-xl bg-[#2DD4BF] text-white font-semibold"
             >
-              Confirm Enrollment
+              {t("courses.confirm_enrollment")}
             </button>
           </div>
         </div>

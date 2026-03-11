@@ -4,8 +4,10 @@ import { useAuth } from "../context/AuthContext";
 import { ChevronRight, LogOut, Settings, User, ShieldCheck, LayoutGrid } from "lucide-react";
 import API_BASE_URL from "../lib/api";
 import { useSidebar } from "../context/SidebarContext";
+import { useTranslation } from "react-i18next";
 
 const Sidebar = ({ activePage = "dashboard" }) => {
+  const { t } = useTranslation();
   const { sidebarOpen, setSidebarOpen, sidebarCollapsed, setSidebarCollapsed } = useSidebar();
   const { user, logout } = useAuth();
   const navigate = useNavigate();
@@ -66,9 +68,9 @@ const Sidebar = ({ activePage = "dashboard" }) => {
               return (
                 <div key={item.id} onClick={() => navigate(item.path)} className={`group relative flex items-center px-4 py-4 rounded-[1.5rem] cursor-pointer transition-all duration-300 ${sidebarCollapsed ? "justify-center" : ""} ${isActive ? "bg-teal-500 text-white shadow-xl shadow-teal-500/30" : "text-muted hover:bg-canvas-alt"}`}>
                   <img src={item.icon} alt={item.label} className={`w-5 h-5 shrink-0 transition-transform group-hover:scale-110 ${isActive ? "brightness-0 invert" : ""}`} />
-                  {!sidebarCollapsed && <span className={`ml-4 text-sm font-black uppercase tracking-tight ${isActive ? "text-white" : ""}`}>{item.label}</span>}
+                  {!sidebarCollapsed && <span className={`ml-4 text-sm font-black uppercase tracking-tight ${isActive ? "text-white" : ""}`}>{t(`nav.${item.id}`)}</span>}
                   {sidebarCollapsed && (
-                    <div className="absolute left-full ml-6 px-4 py-2 bg-slate-900 text-white text-[10px] font-black rounded-xl opacity-0 group-hover:opacity-100 pointer-events-none transition-all shadow-2xl z-50 uppercase tracking-widest">{item.label}</div>
+                    <div className="absolute left-full ml-6 px-4 py-2 bg-slate-900 text-white text-[10px] font-black rounded-xl opacity-0 group-hover:opacity-100 pointer-events-none transition-all shadow-2xl z-50 uppercase tracking-widest">{t(`nav.${item.id}`)}</div>
                   )}
                 </div>
               );
@@ -85,8 +87,8 @@ const Sidebar = ({ activePage = "dashboard" }) => {
                  <h4 className="text-xs font-black text-main uppercase tracking-tighter">{displayName}</h4>
               </div>
               <div className="p-2">
-                <button onClick={() => {navigate("/settings"); setProfilePopupOpen(false);}} className="flex items-center w-full px-4 py-4 text-[10px] font-black uppercase text-main hover:bg-teal-500 hover:text-white rounded-[1.5rem] transition-all"><Settings className="w-4 h-4 mr-3" /> Dashboard Settings</button>
-                <button onClick={handleLogout} className="flex items-center w-full px-4 py-4 text-[10px] font-black uppercase text-red-500 hover:bg-red-500 hover:text-white rounded-[1.5rem] transition-all mt-1"><LogOut className="w-4 h-4 mr-3" /> End Session</button>
+                <button onClick={() => {navigate("/settings"); setProfilePopupOpen(false);}} className="flex items-center w-full px-4 py-4 text-[10px] font-black uppercase text-main hover:bg-teal-500 hover:text-white rounded-[1.5rem] transition-all"><Settings className="w-4 h-4 mr-3" /> {t("header.dashboard_settings")}</button>
+                <button onClick={handleLogout} className="flex items-center w-full px-4 py-4 text-[10px] font-black uppercase text-red-500 hover:bg-red-500 hover:text-white rounded-[1.5rem] transition-all mt-1"><LogOut className="w-4 h-4 mr-3" /> {t("header.end_session")}</button>
               </div>
             </div>
           )}
@@ -100,7 +102,7 @@ const Sidebar = ({ activePage = "dashboard" }) => {
               {!sidebarCollapsed && (
                 <div className="ml-3 flex-1 min-w-0">
                   <div className="text-[11px] font-black text-main truncate uppercase tracking-tight">{displayName}</div>
-                  <div className="text-[9px] text-muted font-bold opacity-50 uppercase tracking-widest mt-0.5">Account</div>
+                  <div className="text-[9px] text-muted font-bold opacity-50 uppercase tracking-widest mt-0.5">{t("nav.account")}</div>
                 </div>
               )}
             </div>
