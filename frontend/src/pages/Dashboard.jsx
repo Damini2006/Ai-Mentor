@@ -337,7 +337,7 @@ const Dashboard = () => {
               {dynamicStatsCards.map((card, index) => (
                 <div
                   key={index}
-                  className="bg-card rounded-2xl p-6 shadow-sm border border-border"
+                  className="bg-card rounded-2xl p-6 shadow-sm border border-border hover:shadow-lg hover:-translate-y-1 hover:border-teal-500/40 transition-all duration-300 cursor-pointer"
                 >
                   <div className="flex items-center justify-between mb-4">
                     <div className={`p-3 rounded-xl ${card.iconBg}`}>
@@ -364,7 +364,7 @@ const Dashboard = () => {
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                   {coursesData.allCourses.slice(0, 3).map((course, index) => (
                     <Link to={`/learning/${course.id}`} key={index}>
-                      <div className="bg-card rounded-xl border border-border overflow-hidden shadow-sm h-full">
+                      <div className="bg-card rounded-xl border border-border overflow-hidden shadow-sm h-full hover:shadow-lg hover:-translate-y-1 hover:border-teal-500/40 transition-all duration-300">
                         <div className="relative">
                           <img
                             src={course.image}
@@ -409,7 +409,7 @@ const Dashboard = () => {
               </div>
 
               {/* Course Topics Chart */}
-              <div className="bg-card rounded-2xl p-6 shadow-sm border border-border">
+              <div className="bg-card rounded-2xl p-6 shadow-sm border border-border hover:shadow-lg hover:-translate-y-1 hover:border-teal-500/40 transition-all duration-300">
                 <h2 className="text-xl font-bold text-main mb-6">
                   Course Topics
                 </h2>
@@ -480,7 +480,7 @@ const Dashboard = () => {
                 <h2 className="text-xl font-bold text-main mb-6">
                   My Courses
                 </h2>
-                <div className="bg-card rounded-xl border border-border overflow-hidden">
+                <div className="bg-card rounded-xl border border-border overflow-hidden hover:shadow-lg hover:border-teal-500/40 transition-all duration-300">
                   <div className="overflow-x-auto">
                     <table className="w-full">
                       <thead className="bg-canvas-alt">
@@ -560,7 +560,7 @@ const Dashboard = () => {
                   {continueLearning.map((item, index) => (
                     <div
                       key={index}
-                      className="bg-card rounded-xl p-4 border border-border shadow-sm hover:shadow-md transition-shadow"
+                      className="bg-card rounded-xl p-4 border border-border shadow-sm hover:shadow-lg hover:-translate-y-1 hover:border-teal-500/40 transition-all duration-300"
                     >
                       <div className="flex items-center">
                         <Link
@@ -602,7 +602,7 @@ const Dashboard = () => {
 
             <div className="grid grid-cols-1 xl:grid-cols-4 gap-8">
               {/* Calendar */}
-              <div className="xl:col-span-3 bg-card rounded-xl p-6 border border-border">
+              <div className="xl:col-span-3 bg-card rounded-xl p-6 border border-border hover:shadow-lg hover:border-teal-500/40 transition-all duration-300">
                 <div className="flex items-center justify-between mb-6">
                   <h2 className="text-xl font-bold text-main">
                     Class Calendar
@@ -662,7 +662,7 @@ const Dashboard = () => {
               </div>
 
               {/* Today's Schedule */}
-              <div className="bg-card rounded-xl p-6 border border-border">
+              <div className="bg-card rounded-xl p-6 border border-border hover:shadow-lg hover:border-teal-500/40 transition-all duration-300">
                 <h3 className="text-lg font-semibold text-main mb-4">
                   Today's Schedule
                 </h3>

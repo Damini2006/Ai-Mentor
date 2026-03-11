@@ -8,6 +8,7 @@ import { useSidebar } from "../context/SidebarContext";
 const Header = () => {
   const { sidebarOpen, setSidebarOpen } = useSidebar();
   const [dropdownOpen, setDropdownOpen] = useState(false);
+  const [showLogoutConfirm, setShowLogoutConfirm] = useState(false);
   const { user, logout } = useAuth();
   const navigate = useNavigate();
   const dropdownRef = useRef(null);
@@ -16,9 +17,13 @@ const Header = () => {
   const displayName = user?.name || user?.email?.split('@')[0] || "User";
 
   const handleLogout = () => {
+    setShowLogoutConfirm(true);
+  };
+
+  const confirmLogout = () => {
     logout();
+    setShowLogoutConfirm(false);
     setDropdownOpen(false);
-    // LoginPage par "Logged out" popup dikhane ke liye state pass karein
     navigate("/login", { state: { logoutSuccess: true } });
   };
 
@@ -41,6 +46,7 @@ const Header = () => {
   }, [setSidebarOpen]);
 
   return (
+    <>
     <header className="bg-card/80 backdrop-blur-xl border-b border-border/50 px-6 py-4 fixed top-0 left-0 right-0 z-[100]">
       <div className="flex items-center justify-between max-w-[1600px] mx-auto">
         
@@ -132,7 +138,7 @@ const Header = () => {
                   <div className="my-2 border-t border-border/50 mx-2" />
                   
                   <button onClick={handleLogout} className="flex items-center w-full px-4 py-3.5 text-xs font-black text-red-500 hover:bg-red-500 hover:text-white rounded-[1.2rem] transition-all group">
-                    <LogOut className="mr-3 w-4 h-4 group-hover:translate-x-1 transition-transform" /> Logout Session
+                    <LogOut className="mr-3 w-4 h-4 group-hover:translate-x-1 transition-transform" /> Logout
                   </button>
                 </div>
               </div>
@@ -141,6 +147,20 @@ const Header = () => {
         </div>
       </div>
     </header>
+      {showLogoutConfirm && (
+        <div className="fixed inset-0 z-[200] flex items-center justify-center bg-black/60 backdrop-blur-sm">
+          <div className="bg-card border border-border/50 rounded-[2rem] shadow-2xl p-8 w-80 text-center">
+            <LogOut className="w-10 h-10 text-red-500 mx-auto mb-4" />
+            <h3 className="text-sm font-black uppercase tracking-tight text-main mb-2">Logout</h3>
+            <p className="text-xs text-muted mb-6">Are you sure you want to logout?</p>
+            <div className="flex gap-3">
+              <button onClick={() => setShowLogoutConfirm(false)} className="flex-1 py-3 rounded-[1.2rem] text-[10px] font-black uppercase tracking-widest border border-border hover:bg-canvas-alt transition-all">Cancel</button>
+              <button onClick={confirmLogout} className="flex-1 py-3 rounded-[1.2rem] text-[10px] font-black uppercase tracking-widest bg-red-500 text-white hover:bg-red-600 transition-all">Logout</button>
+            </div>
+          </div>
+        </div>
+      )}
+    </>
   );
 };
 
