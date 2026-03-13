@@ -400,14 +400,14 @@ const Dashboard = () => {
               })}
             </div>
 
-            <div className="grid grid-cols-1 xl:grid-cols-3 gap-8">
+            <div className="grid grid-cols-1 gap-8">
               {/* Popular Courses */}
-              {/* <div className="xl:col-span-2">
+              <div>
                 <h2 className="text-xl font-bold text-main mb-6">
                   {t("dashboard.popular_courses")}
                 </h2>
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                  {coursesData.allCourses.slice(0, 3).map((course, index) => (
+                  {coursesData.allCourses.slice(0, 13).map((course, index) => (
                     <Link to={`/learning/${course.id}`} key={index}>
                       <div className="bg-card rounded-xl border border-border overflow-hidden shadow-sm h-full hover:shadow-lg hover:-translate-y-1 hover:border-teal-500/40 transition-all duration-300">
                         <div className="relative">
@@ -642,75 +642,11 @@ const Dashboard = () => {
               )}
               </div>
 
-              {/* Course Topics Chart */}
-              <div className="bg-card rounded-2xl p-6 shadow-sm border border-border hover:shadow-lg hover:-translate-y-1 hover:border-teal-500/40 transition-all duration-300">
-                <h2 className="text-xl font-bold text-main mb-6">
-                  {t("dashboard.course_topics")}
-                </h2>
-                <div className="relative flex items-center justify-center mb-6">
-                  <div className="w-48 h-48 relative">
-                    <svg className="w-full h-full" viewBox="0 0 200 200">
-                      {/* Pie chart segments */}
-                      <circle
-                        cx="100"
-                        cy="100"
-                        r="80"
-                        fill="none"
-                        stroke="#FF885A"
-                        strokeWidth="40"
-                        strokeDasharray="351.86 351.86"
-                        strokeDashoffset="87.97"
-                        transform="rotate(-90 100 100)"
-                      />
-                      <circle
-                        cx="100"
-                        cy="100"
-                        r="80"
-                        fill="none"
-                        stroke="#FFD0BD"
-                        strokeWidth="40"
-                        strokeDasharray="70.37 281.49"
-                        strokeDashoffset="263.89"
-                        transform="rotate(-90 100 100)"
-                      />
-                      <circle
-                        cx="100"
-                        cy="100"
-                        r="80"
-                        fill="none"
-                        stroke="#FFA988"
-                        strokeWidth="40"
-                        strokeDasharray="140.74 211.12"
-                        strokeDashoffset="193.52"
-                        transform="rotate(-90 100 100)"
-                      />
-                    </svg>
-                    <div className="absolute inset-0 flex flex-col items-center justify-center">
-                      <div className="text-2xl font-bold">15</div>
-                      <div className="text-xs text-muted">{t("dashboard.total_course")}</div>
-                    </div>
-                  </div>
-                </div>
-                <div className="space-y-3">
-                  <div className="flex items-center">
-                    <div className="w-3 h-3 rounded-full bg-orange-400 mr-3"></div>
-                    <span className="text-sm text-muted">{t("dashboard.code")} (70%)</span>
-                  </div>
-                  <div className="flex items-center">
-                    <div className="w-3 h-3 rounded-full bg-orange-200 mr-3"></div>
-                    <span className="text-sm text-muted">{t("dashboard.data")} (20%)</span>
-                  </div>
-                  <div className="flex items-center">
-                    <div className="w-3 h-3 rounded-full bg-orange-300 mr-3"></div>
-                    <span className="text-sm text-muted">{t("dashboard.design")} (10%)</span>
-                  </div>
-                </div>
-              </div>
             </div>
 
-            <div className="grid grid-cols-1 xl:grid-cols-3 gap-8">
-              {/* My Courses Table
-              <div className="xl:col-span-2">
+            <div className="grid grid-cols-1 gap-8">
+              {/* My Courses Table */}
+              <div>
                 <h2 className="text-xl font-bold text-main mb-6">
                   {t("dashboard.my_courses")}
                 </h2>
@@ -785,136 +721,8 @@ const Dashboard = () => {
                 </div>
               </div> */}
 
-              {/* Continue Learning
-              <div>
-                <h2 className="text-xl font-bold text-main mb-6">
-                  {t("common.continue_learning")}
-                </h2>
-                <div className="space-y-4">
-                  {continueLearning.map((item, index) => (
-                    <div
-                      key={index}
-                      className="bg-card rounded-xl p-4 border border-border shadow-sm hover:shadow-lg hover:-translate-y-1 hover:border-teal-500/40 transition-all duration-300"
-                    >
-                      <div className="flex items-center">
-                        <Link
-                          to={`/course-preview/${item.id}`}
-                          className="flex items-center flex-1"
-                        >
-                          <img
-                            src={item.image}
-                            alt={item.title}
-                            className="w-12 h-12 rounded-lg mr-4"
-                          />
-                          <div className="flex-1">
-                            <h3 className="font-medium text-main mb-1 hover:text-teal-600">
-                              {item.title}
-                            </h3>
-                            <p className="text-sm text-muted mb-2">
-                              {item.lesson}
-                            </p>
-                            <div className="w-full bg-border rounded-full h-2 mb-2">
-                              <div
-                                className={`h-2 rounded-full ${item.progressColor}`}
-                                style={{ width: `${item.progress}%` }}
-                              ></div>
-                            </div>
-                          </div>
-                        </Link>
-                        <Link
-                          to={`/learning/${item.id}`}
-                          className="ml-4 px-4 py-2 bg-teal-500 text-white text-sm font-medium rounded-lg hover:bg-teal-600"
-                        >
-                          {t("common.continue_learning")}
-                        </Link>
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              </div>
             </div>
 
-            <div className="grid grid-cols-1 xl:grid-cols-4 gap-8">
-              {/* Calendar */}
-              <div className="xl:col-span-3 bg-card rounded-xl p-6 border border-border">
-                <div className="flex items-center justify-between mb-6">
-                  <h2 className="text-xl font-bold text-main">
-                    {t("dashboard.class_calendar")}
-                  </h2>
-                  <div className="flex items-center space-x-4">
-                    <button className="p-2 bg-gray-100 text-black rounded-lg">
-                      <ChevronLeftIcon className="w-4 h-4" />
-                    </button>
-                    <span className="text-lg font-medium">December 2024</span>
-                    <button className="p-2 bg-gray-100 text-black rounded-lg">
-                      <ChevronRight className="w-4 h-4" />
-                    </button>
-                  </div>
-                </div>
-
-                <div className="grid grid-cols-7 gap-px mb-4">
-                  {["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"].map(
-                    (day) => (
-                      <div
-                        key={day}
-                        className="p-3 text-center text-sm font-medium text-muted"
-                      >
-                        {day}
-                      </div>
-                    ),
-                  )}
-                </div>
-
-                <div className="grid grid-cols-7 gap-px">
-                  {Array.from({ length: 31 }, (_, i) => (
-                    <div
-                      key={i + 1}
-                      className={`p-3 text-center text-sm ${[3, 5, 9, 12, 16, 19, 23].includes(i + 1)
-                        ? "bg-blue-50 dark:bg-blue-100 text-blue-900 rounded-lg"
-                        : "text-main hover:bg-canvas-alt rounded-lg"
-                        }`}
-                    >
-                      {i + 1}
-                    </div>
-                  ))}
-                </div>
-
-                <div className="flex items-center space-x-6 mt-6 text-sm">
-                  <div className="flex items-center">
-                    <div className="w-3 h-3 bg-blue-500 rounded-full mr-2"></div>
-                    <span className="text-muted">{t("analytics.upcoming")}</span>
-                  </div>
-                  <div className="flex items-center">
-                    <div className="w-3 h-3 bg-green-500 rounded-full mr-2"></div>
-                    <span className="text-muted">{t("analytics.completed")}</span>
-                  </div>
-                  <div className="flex items-center">
-                    <div className="w-3 h-3 bg-red-500 rounded-full mr-2"></div>
-                    <span className="text-muted">{t("analytics.missed")}</span>
-                  </div>
-                </div>
-              </div>
-
-              {/* Today's Schedule */}
-              <div className="bg-card rounded-xl p-6 border border-border">
-                <h3 className="text-lg font-semibold text-main mb-4">
-                  {t("dashboard.schedule")}
-                </h3>
-                <div className="space-y-3">
-                  {schedule.map((item, index) => (
-                    <div
-                      key={index}
-                      className={`p-3 rounded-lg border-l-4 ${item.color}`}
-                    >
-                      <h4 className="font-medium text-black mb-1">
-                        {item.title}
-                      </h4>
-                      <p className="text-sm text-muted">{item.time}</p>
-                    </div>
-                  ))}
-                </div>
-              </div>
-            </div>
           </div>
         </main>
       </div>
