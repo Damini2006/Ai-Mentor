@@ -146,12 +146,7 @@ export default function CoursePreview() {
     };
   }, [courseId]);
 
-  // redirect if purchased (keeps behaviour of redirecting to /courses)
-  useEffect(() => {
-    if (!user || !courseId) return;
-    const purchased = Array.isArray(user.purchasedCourses) && user.purchasedCourses.some((c) => Number(c.courseId) === Number(courseId));
-    if (purchased) navigate(`/courses`, { replace: true });
-  }, [user, courseId, navigate]);
+  // Note: purchased courses show "Go to Course" button instead of "Buy Now" (see isPurchased below)
 
   // image error handlers: cycle through candidates
   const handleHeroError = () => {

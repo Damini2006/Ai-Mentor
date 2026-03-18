@@ -53,6 +53,7 @@ const App = () => {
         <Route path="/settings" element={<Settings />} />
         <Route path="/watchedvideos" element={<WatchedVideos />} />
         <Route path="/learning/:id" element={<LearningPage />} />
+        <Route path="/course-preview/:courseId" element={<CoursePreview />} />
       </Route>
 
       {/* Admin Routes */}
@@ -60,8 +61,7 @@ const App = () => {
         <Route path="/admin" element={<AdminPage />} />
       </Route>
 
-      {/* Other public routes */}
-      <Route path="/course-preview/:courseId" element={<CoursePreview />} />
+
     </Routes>
   );
 };
