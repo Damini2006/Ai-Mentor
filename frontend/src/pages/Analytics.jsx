@@ -1,3 +1,12 @@
+import React, { useState, useEffect } from "react";
+
+import Header from "../components/Header";
+import Sidebar from "../components/Sidebar";
+
+import { useAuth } from "../context/AuthContext";
+import { useSidebar } from "../context/SidebarContext";
+
+import { useTranslation } from "react-i18next";
 const Analytics = () => {
   const { t } = useTranslation();
   const { sidebarOpen, setSidebarOpen, sidebarCollapsed, setSidebarCollapsed } = useSidebar();
@@ -46,7 +55,11 @@ const Analytics = () => {
   };
 
   const handleNextMonth = () => {
-    setCurrentDate(prevDate => new Date(prevDate.setMonth(prevDate.getMonth() + 1)));
+    setCurrentDate(prevDate => {
+      const newDate = new Date(prevDate);
+      newDate.setMonth(newDate.getMonth() + 1);
+      return newDate;
+    });
   };
 
   useEffect(() => {
@@ -152,7 +165,9 @@ const Analytics = () => {
   const calendarGrid = generateCalendarGrid(currentDate, studyDaysInCurrentMonth);
 
   const learningHoursChartData = analyticsData?.learningHoursChart || [];
-  const maxLearningHour = Math.max(...learningHoursChartData.map(d => d.hours), 1); // Avoid division by zero
+  const maxLearningHour = learningHoursChartData.length > 0
+  ? Math.max(...learningHoursChartData.map(d => d.hours))
+  : 1;
 
   const coursePerformanceData = user?.purchasedCourses?.map(purchasedCourse => {
     const courseInfo = allCourses.find(c => c.id == purchasedCourse.courseId);

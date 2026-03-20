@@ -1,13 +1,14 @@
 import React, { useState, useEffect } from "react";
 import Header from "../components/Header";
 import Sidebar from "../components/Sidebar";
-import { Star, Bookmark, X } from "lucide-react";
+import { Star, Bookmark, X, Search } from "lucide-react";
 import { useAuth } from "../context/AuthContext";
 import { useSidebar } from "../context/SidebarContext";
 import { useNavigate, useLocation } from "react-router-dom";
 import API_BASE_URL from "../lib/api";
-
+import { useTranslation } from "react-i18next";
 const CoursesPage = () => {
+  const { t } = useTranslation();
   const { sidebarOpen, setSidebarOpen, sidebarCollapsed, setSidebarCollapsed } =
     useSidebar();
   const [activeTab, setActiveTab] = useState("my-courses");
