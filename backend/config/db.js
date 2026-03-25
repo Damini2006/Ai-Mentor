@@ -1,7 +1,12 @@
+import path from "path";
+import { fileURLToPath } from "url";
 import { Sequelize } from "sequelize";
 import dotenv from "dotenv";
 
-dotenv.config();
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+
+dotenv.config({ path: path.resolve(__dirname, "../.env") });
 
 const connectionString = process.env.NEON_DATABASE_URL;
 
@@ -12,7 +17,6 @@ if (!connectionString) {
 const sequelize = new Sequelize(connectionString, {
   dialect: "postgres",
   logging: false,
-  // Pool settings help avoid exhausting Neon connections
   pool: {
     max: parseInt(process.env.DB_POOL_MAX, 10) || 5,
     min: parseInt(process.env.DB_POOL_MIN, 10) || 0,
@@ -34,12 +38,8 @@ async function connectDB() {
   } catch (error) {
     const messageParts = ["❌ Unable to connect:"];
     if (error && typeof error === "object") {
-      if ("message" in error && error.message) {
-        messageParts.push(error.message);
-      }
-      if ("code" in error && error.code) {
-        messageParts.push(`(code: ${error.code})`);
-      }
+      if ("message" in error && error.message) messageParts.push(error.message);
+      if ("code" in error && error.code) messageParts.push(`(code: ${error.code})`);
     }
     console.error(messageParts.join(" "));
     if (process.env.DB_LOG_VERBOSE_ERRORS === "true") {

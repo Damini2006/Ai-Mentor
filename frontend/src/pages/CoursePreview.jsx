@@ -115,7 +115,7 @@ export default function CoursePreview() {
           const heroCandidates = buildImageCandidates(heroPath);
           heroCandidatesRef.current = heroCandidates;
           heroIndexRef.current = 0;
-          setHeroSrc(API_BASE_URL + heroCandidates[0] || "/ui/course-hero-placeholder.jpg");
+          setHeroSrc(heroCandidates[0] || "/ui/course-hero-placeholder.jpg");
 
           // prepare instructor image candidates: brand-first then backend candidates
           const brandInstructorPaths = ["/AI_Tutor_New_UI/Course_Preview/Mascot.jpeg", "/brankkit/mascot.png", "/assets/mascot.png"];

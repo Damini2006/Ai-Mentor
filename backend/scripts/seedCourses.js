@@ -1,49 +1,69 @@
-// backend/seedCourses.js
 import fs from "fs";
 import path from "path";
 import { fileURLToPath } from "url";
 
-import { sequelize } from "./config/db.js";
+import cloudinary from "../config/cloudinary.js";
+import { sequelize } from "../config/db.js";
 import {
     Course,
     Module,
     Lesson,
     LessonContent,
-} from "./models/modelAssociations.js";
+} from "../models/modelAssociations.js";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-const coursesPath = path.join(__dirname, "../frontend/public/data/courses.json");
-const learningPath = path.join(__dirname, "../frontend/public/data/learning.json");
+const coursesPath = path.join(__dirname, "../seeds/data/courses.json");
+const learningPath = path.join(__dirname, "../seeds/data/learning.json");
+const imagesPath = path.join(__dirname, "../seeds/course_images");
 
-const normalizeImagePath = (image) => {
-    if (!image) return null;
+const uploadImageToCloudinary = async (imagePath, courseId) => {
+    if (!imagePath) return null;
 
-    if (image.startsWith("http://") || image.startsWith("https://")) {
-        return image;
+    const fileName = imagePath.split("/").pop();
+    const fullPath = path.join(imagesPath, fileName);
+
+    if (!fs.existsSync(fullPath)) {
+        console.warn(`⚠ Image not found: ${fileName}`);
+        return null;
     }
 
-    if (image.startsWith("/")) {
-        return image;
-    }
+    try {
+        const result = await cloudinary.uploader.upload(fullPath, {
+            folder: "courses",
+            public_id: `course-${courseId}`,
+            overwrite: true,
+            invalidate: true,
+        });
 
-    const fileName = image.split("/").pop();
-    return `/uploads/courses/${fileName}`;
+        return result.secure_url;
+    } catch (err) {
+        console.error(`❌ Cloudinary upload failed for ${fileName}:`, err.message);
+        return null;
+    }
 };
 
 async function seedCourses() {
     try {
+        console.log("\n🌱 Starting database seeding...\n");
+
+        await sequelize.authenticate();
+        console.log("✅ Database connected");
+
         await sequelize.sync({ force: true });
+        console.log("🧹 Old data cleared\n");
 
-        console.log("🌱 Seeding courses...");
-
-        const coursesData = JSON.parse(fs.readFileSync(coursesPath, "utf-8"));
-        const learningData = JSON.parse(fs.readFileSync(learningPath, "utf-8"));
+        const coursesData = JSON.parse(fs.readFileSync(coursesPath, "utf8"));
+        const learningData = JSON.parse(fs.readFileSync(learningPath, "utf8"));
 
         const courses = coursesData.popularCourses || [];
 
         for (const course of courses) {
+            console.log(`📚 Seeding course: ${course.title}`);
+
+            const imageUrl = await uploadImageToCloudinary(course.image, course.id);
+
             const createdCourse = await Course.create({
                 id: String(course.id),
                 title: course.title || null,
@@ -58,39 +78,44 @@ async function seedCourses() {
                 rating: course.rating ?? null,
                 students: course.students || null,
                 studentsCount: course.studentsCount ?? null,
-                image: normalizeImagePath(course.image),
+                image: imageUrl,
                 isBookmarked: course.isBookmarked ?? false,
             });
 
             const learning = learningData[String(course.id)];
-            if (!learning || !Array.isArray(learning.modules)) continue;
+            if (!learning || !Array.isArray(learning.modules)) {
+                console.log(`⚠ No learning data found for course ${course.title}\n`);
+                continue;
+            }
 
-            for (let mIndex = 0; mIndex < learning.modules.length; mIndex++) {
-                const module = learning.modules[mIndex];
+            for (let m = 0; m < learning.modules.length; m++) {
+                const module = learning.modules[m];
 
-                const moduleId = `${createdCourse.id}-${module.id || `module-${mIndex + 1}`}`;
+                const moduleId = `${createdCourse.id}-${module.id || `module-${m + 1}`}`;
 
                 const createdModule = await Module.create({
                     id: moduleId,
                     title: module.title || null,
-                    order: mIndex,
+                    order: m,
                     courseId: createdCourse.id,
                 });
 
                 if (!Array.isArray(module.lessons)) continue;
 
-                for (let lIndex = 0; lIndex < module.lessons.length; lIndex++) {
-                    const lesson = module.lessons[lIndex];
+                for (let l = 0; l < module.lessons.length; l++) {
+                    const lesson = module.lessons[l];
+
+                    const lessonId = `${moduleId}-${lesson.id || `lesson-${l + 1}`}`;
 
                     const createdLesson = await Lesson.create({
-                        id: String(lesson.id),
+                        id: lessonId,
                         title: lesson.title || null,
                         duration: lesson.duration || null,
                         completed: lesson.completed ?? false,
                         playing: lesson.playing ?? false,
                         type: lesson.type || null,
                         youtubeUrl: lesson.youtubeUrl || null,
-                        order: lIndex,
+                        order: l,
                         moduleId: createdModule.id,
                     });
 
@@ -107,12 +132,14 @@ async function seedCourses() {
                     }
                 }
             }
+
+            console.log(`✅ Course seeded: ${course.title}\n`);
         }
 
-        console.log("✅ Courses seeded successfully!");
+        console.log("🎉 All courses seeded successfully!\n");
         process.exit(0);
     } catch (error) {
-        console.error("❌ Seeding failed:", error);
+        console.error("\n❌ Seeding failed:", error);
         process.exit(1);
     }
 }

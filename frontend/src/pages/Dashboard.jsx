@@ -411,7 +411,7 @@ const Dashboard = () => {
                       <div className="bg-card rounded-xl border border-border overflow-hidden shadow-sm h-full hover:shadow-lg hover:-translate-y-1 hover:border-teal-500/40 transition-all duration-300">
                         <div className="relative">
                           <img
-                            src={API_BASE_URL + course.image}
+                            src={course.image}
                             alt={course.title}
                             className="w-full h-40 object-cover"
                           />
@@ -484,7 +484,7 @@ const Dashboard = () => {
                                   className="flex items-center"
                                 >
                                   <img
-                                    src={API_BASE_URL + course.image}
+                                    src={course.image}
                                     alt={course.title}
                                     className="w-12 h-12 rounded-lg mr-4"
                                   />
@@ -536,7 +536,7 @@ const Dashboard = () => {
                             >
                               <div className="flex items-center min-w-0">
                                 <img
-                                  src={API_BASE_URL + course.image}
+                                  src={course.image}
                                   alt={course.title}
                                   className="w-12 h-12 rounded-lg mr-4"
                                 />
@@ -595,7 +595,7 @@ const Dashboard = () => {
                               className="flex items-center flex-1"
                             >
                               <img
-                                src={API_BASE_URL + item.image}
+                                src={item.image}
                                 alt={item.title}
                                 className="w-12 h-12 rounded-lg mr-4"
                               />
