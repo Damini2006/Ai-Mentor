@@ -7,7 +7,7 @@ const Module = sequelize.define("Module", {
         primaryKey: true,
     },
     courseId: {
-        type: DataTypes.STRING,
+        type: DataTypes.INTEGER,
         allowNull: false,
     },
 

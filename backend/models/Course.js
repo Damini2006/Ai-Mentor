@@ -3,7 +3,7 @@ import { sequelize } from "../config/db.js";
 
 const Course = sequelize.define("Course", {
   id: {
-    type: DataTypes.STRING,
+    type: DataTypes.INTEGER,
     primaryKey: true,
     allowNull: false,
   },
