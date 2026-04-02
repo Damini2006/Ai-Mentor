@@ -21,8 +21,8 @@
     "pdf-lib": "^1.17.1",
     "pg": "^8.18.0",
     "pg-hstore": "^2.3.4",
-    "react": "^19.2.4",
-    "sequelize": "^6.37.8"
+    "sequelize": "^6.37.8",
+    "zod": "^4.3.6"
   },
   "devDependencies": {
     "nodemon": "^3.1.11"

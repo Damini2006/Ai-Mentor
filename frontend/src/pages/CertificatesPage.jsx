@@ -9,14 +9,10 @@ import {
   ChevronRight,
   FileText,
 } from "lucide-react";
-import Header from "../components/Header";
 import API_BASE_URL from "../lib/api";
-import Sidebar from "../components/Sidebar";
 import { useAuth } from "../context/AuthContext";
-import { useSidebar } from "../context/SidebarContext";
 
 const CertificatesPage = () => {
-  const { sidebarCollapsed } = useSidebar();
   const { user } = useAuth();
 
   const [data, setData] = useState(null);
@@ -84,18 +80,10 @@ const CertificatesPage = () => {
   const courses = data?.courses || [];
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-[#F5F5F5] to-[#CCCCCC] dark:from-[#1A1A1A] dark:to-[#2D3436] flex flex-col">
-      <Header />
-      <Sidebar activePage="certificates" />
-
-      <div
-        className={`flex-1 transition-all duration-300 mt-16 ${
-          sidebarCollapsed ? "lg:ml-20" : "lg:ml-80"
-        }`}
-      >
-        <main className="p-4 md:p-6 lg:p-8">
-          {/* Page Header */}
-          <div className="mb-8">
+    <main className="flex-1 overflow-x-hidden overflow-y-auto bg-canvas-alt p-6">
+      <div className="max-w-7xl mx-auto space-y-8">
+        {/* Page Header */}
+        <div className="mb-0">
             <div className="flex items-center gap-3 mb-2">
               <div className="p-3 bg-gradient-to-br from-amber-400 to-yellow-600 rounded-2xl shadow-lg">
                 <Award className="w-7 h-7 text-white" />
@@ -346,9 +334,8 @@ const CertificatesPage = () => {
               )}
             </>
           )}
-        </main>
       </div>
-    </div>
+    </main>
   );
 };
 
